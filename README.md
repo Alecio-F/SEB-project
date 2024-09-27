@@ -13,11 +13,6 @@ O **SEB Project** é um software desenvolvido para calcular o orçamento complet
 - **Java**: Linguagem principal para o desenvolvimento do software.
 - **MySQL**: Banco de dados utilizado para armazenar as informações do orçamento e dados das instalações.
 
-### Pré-requisitos
-- **Java 17** ou superior.
-- **MySQL 8.x**.
-- **IDE**: IntelliJ IDEA ou Eclipse (ou qualquer outra IDE de sua escolha).
-- 
 ### Contribuidores
 - A ser adicionado.
 
