@@ -1,12 +1,16 @@
 package seb.project;
 
-import java.sql.Connection;
-import java.sql.SQLException;
+//import java.sql.Connection;
+//import java.sql.SQLException;
+import seb.project.dao.ClienteDAO;
+import seb.project.model.Cliente;
+import java.util.List;
+//import seb.project.util.DatabaseConnection;
 
 
 public class Main {
     public static void main(String[] args) {
-        
+        /*
         // testando conexão com sql
         try {
             Connection connection = DatabaseConnection.getConnection();
@@ -17,16 +21,19 @@ public class Main {
             }
         } catch (SQLException e) {
             e.printStackTrace();
-        }
-        try {
-            // Criar uma instância de ClienteDAO
-            ClienteDAO clienteDAO = new ClienteDAO();
-            
-            // Chamar o método listarClientes
-            clienteDAO.listarClientes();
-        } catch (Exception e) {
-            e.printStackTrace();
-        }
+        } */
+        
+        // Instanciar o DAO
+        ClienteDAO clienteDAO = new ClienteDAO();
+
+        // Criar um cliente (com o modelo)
+        Cliente cliente = new Cliente("João Silva", "12345678901234", "Rua Exemplo, 100", "São Paulo", "SP", "12345-678", "joao@example.com", "11987654321");
+
+        // Inserir o cliente usando o DAO
+        clienteDAO.inserirCliente(cliente);
+
+        // Listar novamente para ver o efeito das alterações
+        clienteDAO.listarClientes();
 
     }
 }
