@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class IrradiacaoSolarAPI {
 
     private static final String API_URL = "https://api.openweathermap.org/energy/1.0/solar/data?lat=%s&lon=%s&date=%s&appid=%s";
-    private static final String API_KEY = "450676c4795b3665ef1f1f2f029395c3"; 
+    private static final String API_KEY = "API_KEY"; 
 
     // Método para obter e calcular a irradiação solar diária
     public void obterIrradiacaoSolar(double latitude, double longitude, String date) {
