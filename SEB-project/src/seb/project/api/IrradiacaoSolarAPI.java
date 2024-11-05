@@ -12,10 +12,15 @@ import org.json.JSONObject;
 public class IrradiacaoSolarAPI {
 
     private static final String API_URL = "https://api.openweathermap.org/energy/1.0/solar/data?lat=%s&lon=%s&date=%s&appid=%s";
-    private static final String API_KEY = "450676c4795b3665ef1f1f2f029395c3"; 
+    private static final String API_KEY = "4e805c73752"; 
+
+    // Fator de correção para ajustar a irradiância ao contexto brasileiro
+    private static final double FATOR_CORRECAO = 0.58; // Ajuste inicial
 
     // Método para obter e calcular a irradiação solar diária
-    public void obterIrradiacaoSolar(double latitude, double longitude, String date) {
+    public double obterIrradiacaoSolar(double latitude, double longitude, String date) {
+        double irradiacaoDiariaClearSky = 0.0; // Valor inicial
+
         try {
             String urlString = String.format(API_URL, latitude, longitude, date, API_KEY);
             URL url = new URL(urlString);
@@ -39,31 +44,19 @@ public class IrradiacaoSolarAPI {
                 if (jsonResponse.has("irradiance")) {
                     JSONObject irradiance = jsonResponse.getJSONObject("irradiance");
 
-                    if (irradiance.has("hourly")) {
-                        JSONArray hourlyArray = irradiance.getJSONArray("hourly");
-                        double irradiacaoTotal = 0.0;
+                    if (irradiance.has("daily")) {
+                        JSONArray dailyArray = irradiance.getJSONArray("daily");
+                        JSONObject dailyData = dailyArray.getJSONObject(0);
 
-                        // Iterar sobre os dados horários
-                        for (int i = 0; i < hourlyArray.length(); i++) {
-                            JSONObject hourlyData = hourlyArray.getJSONObject(i);
-                            JSONObject clearSky = hourlyData.getJSONObject("clear_sky");
-                            JSONObject cloudySky = hourlyData.getJSONObject("cloudy_sky");
+                        // Obter o valor de GHI para céu limpo
+                        double ghiClearSky = dailyData.getJSONObject("clear_sky").getDouble("ghi");
 
-                            // Acessar o GHI de ambos os tipos de céu
-                            double ghiClear = clearSky.getDouble("ghi");
-                            double ghiCloudy = cloudySky.getDouble("ghi");
+                        // Converter de Wh/m² para kWh/m² e aplicar a correção
+                        irradiacaoDiariaClearSky = (ghiClearSky / 1000.0) * FATOR_CORRECAO; // kWh/m²                   
 
-                            // Somar o maior GHI se não for zero
-                            if (ghiClear > 0 || ghiCloudy > 0) {
-                                irradiacaoTotal += Math.max(ghiClear, ghiCloudy); // Usando o maior valor
-                            }
-                        }
-
-                        // Calcular a irradiação diária em kWh/m²
-                        double irradiacaoDiaria = irradiacaoTotal / 1000; // Convertendo W/m² para kWh/m²
-                        System.out.printf("Irradiação Solar Diária: %.2f kWh/m²%n", irradiacaoDiaria);
+                        System.out.printf("Irradiação Solar Diária (Céu Limpo): %.2f kWh/m²%n", irradiacaoDiariaClearSky);
                     } else {
-                        System.out.println("Nenhum dado horário encontrado.");
+                        System.out.println("Nenhum dado diário encontrado.");
                     }
                 } else {
                     System.out.println("Nenhum resultado encontrado na irradiação.");
@@ -77,6 +70,10 @@ public class IrradiacaoSolarAPI {
             System.out.println("Erro de conexão: " + e.getMessage());
         } catch (JSONException e) {
             System.out.println("Erro ao processar JSON: " + e.getMessage());
+        } catch (Exception e) {
+            System.out.println("Erro inesperado: " + e.getMessage());
         }
+
+        return irradiacaoDiariaClearSky; // Retornar o valor calculado
     }
 }
