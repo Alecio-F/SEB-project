@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.io.InputStreamReader;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 import org.json.JSONArray;
 import org.json.JSONException;
 import org.json.JSONObject;
@@ -12,17 +14,20 @@ import org.json.JSONObject;
 public class IrradiacaoSolarAPI {
 
     private static final String API_URL = "https://api.openweathermap.org/energy/1.0/solar/data?lat=%s&lon=%s&date=%s&appid=%s";
-    private static final String API_KEY = "4e805c73752"; 
+    private static final String API_KEY = "4e805c73752ce40062dcd9a"; 
 
     // Fator de correção para ajustar a irradiância ao contexto brasileiro
     private static final double FATOR_CORRECAO = 0.58; // Ajuste inicial
 
     // Método para obter e calcular a irradiação solar diária
-    public double obterIrradiacaoSolar(double latitude, double longitude, String date) {
+    public double obterIrradiacaoSolar(double latitude, double longitude) {
         double irradiacaoDiariaClearSky = 0.0; // Valor inicial
 
         try {
-            String urlString = String.format(API_URL, latitude, longitude, date, API_KEY);
+            // Obter a data atual no formato "YYYY-MM-DD"
+            String currentDate = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE);
+
+            String urlString = String.format(API_URL, latitude, longitude, currentDate, API_KEY);
             URL url = new URL(urlString);
             HttpURLConnection con = (HttpURLConnection) url.openConnection();
             con.setRequestMethod("GET");
