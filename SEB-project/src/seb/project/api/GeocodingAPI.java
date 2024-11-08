@@ -12,7 +12,7 @@ import org.json.JSONObject;
 public class GeocodingAPI {
 
     private static final String API_URL = "https://maps.googleapis.com/maps/api/geocode/json";
-    private static final String API_KEY = "AIzaSyCQve9Nj0j3TEg1lj"; 
+    private static final String API_KEY = "AIzaSyCQve9Nj0j3TEg1l"; 
 
     // Método para obter coordenadas (latitude, longitude) com base no endereço
     public double[] obterCoordenadas(String endereco) {
