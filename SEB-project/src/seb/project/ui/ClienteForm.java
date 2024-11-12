@@ -10,13 +10,12 @@ import seb.project.model.Cliente;
 
 import java.util.function.UnaryOperator;
 import java.util.regex.Pattern;
+import javafx.scene.Scene;
+import javafx.scene.control.Label;
+import javafx.scene.layout.HBox;
 import seb.project.api.GeocodingAPI;
-import seb.project.api.IrradiacaoSolarAPI;
 
 public class ClienteForm extends VBox {
-    
-    private SistemaFotoForm sistemaFotoForm;  // Referência ao SistemaFotoForm
-    private IrradiacaoSolarAPI irradiacaoSolarAPI;
     
     public ClienteForm(MainApp mainApp) {
 
@@ -24,34 +23,75 @@ public class ClienteForm extends VBox {
         TextField nomeField = new TextField();
         nomeField.setPromptText("Nome do Cliente");
         nomeField.setTextFormatter(createTextFormatter(50)); // Limite de 50 caracteres
+        Label nomeLabel = new Label("Nome: ");
+        HBox nomeHBox = new HBox();
+        nomeHBox.getChildren().addAll(nomeLabel, nomeField);
+        nomeHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField cnpjCpfField = new TextField();
         cnpjCpfField.setPromptText("CNPJ/CPF");
         cnpjCpfField.setTextFormatter(createCnpjCpfFormatter()); // Aceita apenas 11 ou 14 dígitos
+        Label cnpjCpfLabel = new Label("CNPJ/CPF: ");
+        HBox cnpjCpfHBox = new HBox();
+        cnpjCpfHBox.getChildren().addAll(cnpjCpfLabel, cnpjCpfField);
+        cnpjCpfHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField enderecoField = new TextField();
         enderecoField.setPromptText("Endereço");
         enderecoField.setTextFormatter(createTextFormatter(100)); // Limite de 100 caracteres
+        Label enderecoLabel = new Label("Endereço: ");
+        HBox enderecoHBox = new HBox();
+        enderecoHBox.getChildren().addAll(enderecoLabel, enderecoField);
+        enderecoHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField cidadeField = new TextField();
         cidadeField.setPromptText("Cidade");
         cidadeField.setTextFormatter(createTextFormatter(50)); // Limite de 50 caracteres
+        Label cidadeLabel = new Label("Cidade: ");
+        HBox cidadeHBox = new HBox();
+        cidadeHBox.getChildren().addAll(cidadeLabel, cidadeField);
+        cidadeHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField estadoField = new TextField();
         estadoField.setPromptText("Estado");
         estadoField.setTextFormatter(createTextFormatter(2)); // Limite de 2 caracteres (UF)
+        Label estadoLabel = new Label("Estado: ");
+        HBox estadoHBox = new HBox();
+        estadoHBox.getChildren().addAll(estadoLabel, estadoField);
+        estadoHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField cepField = new TextField();
         cepField.setPromptText("CEP");
         cepField.setTextFormatter(createNumericFormatter(8)); // Limite de 8 caracteres
+        Label cepLabel = new Label("CEP: ");
+        HBox cepHBox = new HBox();
+        cepHBox.getChildren().addAll(cepLabel, cepField);
+        cepHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField emailField = new TextField();
         emailField.setPromptText("Email");
         emailField.setTextFormatter(createTextFormatter(50)); // Limite de 50 caracteres
+        Label emailLabel = new Label("Email: ");
+        HBox emailHBox = new HBox();
+        emailHBox.getChildren().addAll(emailLabel, emailField);
+        emailHBox.setSpacing(10); // Espaçamento entre o label e o campo
 
         TextField telefoneField = new TextField();
         telefoneField.setPromptText("Telefone");
         telefoneField.setTextFormatter(createTelefoneFormatter()); // Máscara para telefone
+        Label telefoneLabel = new Label("Telefone: ");
+        HBox telefoneHBox = new HBox();
+        telefoneHBox.getChildren().addAll(telefoneLabel, telefoneField);
+        telefoneHBox.setSpacing(10); // Espaçamento entre o label e o campo
+
+        // Adicionando todos os HBox ao VBox principal
+        
+        // Adicionando todos os HBox ao VBox principal
+        this.getChildren().addAll(nomeHBox, cnpjCpfHBox, enderecoHBox, cidadeHBox, estadoHBox, cepHBox, emailHBox, telefoneHBox);
+
+        // Adicionando o estilo
+        Scene scene = new Scene(this, 400, 400);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm());
 
         Button btnNext = new Button("Próximo");
         btnNext.setOnAction(e -> {
@@ -90,7 +130,7 @@ public class ClienteForm extends VBox {
             }
         });
 
-        getChildren().addAll(nomeField, cnpjCpfField, enderecoField, cidadeField, estadoField, cepField, emailField, telefoneField, btnNext);
+        getChildren().addAll(btnNext);
     }
 
     // Método para criar um TextFormatter que permite apenas números com um limite de caracteres
