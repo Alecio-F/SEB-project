@@ -1,26 +1,34 @@
 package seb.project.ui;
 
 import javafx.application.Application;
+import javafx.geometry.Pos;
 import javafx.scene.Scene;
 import javafx.scene.control.Button;
+import javafx.scene.control.Separator;
+import javafx.scene.layout.BorderPane;
+import javafx.scene.layout.HBox;
 import javafx.scene.layout.VBox;
 import javafx.stage.Stage;
 import seb.project.model.Cliente;
 import seb.project.model.ConsumoEnergetico;
-import seb.project.model.Custos;
 import seb.project.model.SistemaFotovoltaico;
+import seb.project.ui.forms.ClienteForm;
+import seb.project.ui.forms.ConsumoEnergeticoForm;
+import seb.project.ui.forms.CustosForm;
+import seb.project.ui.forms.SistemaFotoForm;
 
 public class MainApp extends Application {
 
-    private Stage primaryStage; // Armazena o palco principal
+    private BorderPane mainLayout;
     private Cliente cliente;
     private ConsumoEnergetico consumoEnergetico;
-    private Custos custos;
     private SistemaFotovoltaico sistemaFotovoltaico;
+    private float potenciaSistema;
+    private double irradiacaoSolar;
 
     @Override
     public void start(Stage primaryStage) {
-        this.primaryStage = primaryStage; // Armazena a referência ao palco principal
+        this.mainLayout = new BorderPane();
 
         // Criação dos botões da tela inicial
         Button btnNovoOrcamento = new Button("Novo Orçamento");
@@ -36,100 +44,134 @@ public class MainApp extends Application {
         btnBackup.setOnAction(e -> fazerBackup());
         btnCarregarBackup.setOnAction(e -> carregarBackup());
 
-        // Layout da tela inicial
-        VBox layout = new VBox(10); // 10px de espaçamento entre os botões
-        layout.getChildren().addAll(btnNovoOrcamento, btnConsultarOrcamento, btnGerarPDF, btnBackup, btnCarregarBackup);
+        // Configuração do VBox para os botões
+        VBox menuBox = new VBox(15);
+        menuBox.getChildren().addAll(btnNovoOrcamento, btnConsultarOrcamento, btnGerarPDF, btnBackup, btnCarregarBackup);
+        menuBox.setAlignment(Pos.TOP_LEFT);
+        menuBox.setPrefWidth(150);
 
-        // Definir a cena e o palco
-        Scene scene = new Scene(layout, 400, 300);
+        // Separador Vertical
+        Separator separator = new Separator();
+        separator.setOrientation(javafx.geometry.Orientation.VERTICAL);
+
+        // Adicionando o menu e o separador na esquerda do BorderPane
+        HBox menuContainer = new HBox(10, menuBox, separator);
+        mainLayout.setLeft(menuContainer);
+
+        // Configuração da cena
+        Scene scene = new Scene(mainLayout, 900, 800);
+        scene.getStylesheets().add(getClass().getResource("style.css").toExternalForm()); // Adiciona o CSS
         primaryStage.setTitle("Sistema de Orçamento de Energia Solar");
         primaryStage.setScene(scene);
         primaryStage.show();
     }
 
+    // Método para abrir o formulário de novo orçamento
     private void abrirTelaNovoOrcamento() {
-        // Criação do formulário de cliente
-        ClienteForm clienteForm = new ClienteForm(this); // Passa o MainApp para o ClienteForm
-
-        // Criação de uma nova cena para o ClienteForm
-        Scene novaCena = new Scene(clienteForm, 400, 300);
-        
-        // Altera a cena do primaryStage para a nova cena
-        primaryStage.setScene(novaCena);
-    }
-
-    // Torne esse método público
-    public void showNextForm() {
-        // Aqui você pode criar e exibir o próximo formulário (Consumo)
-        ConsumoEnergeticoForm consumoForm = new ConsumoEnergeticoForm(this); // Passando o MainApp
-
-        // Criação de uma nova cena para o próximo formulário
-        Scene novaCena = new Scene(consumoForm, 400, 300);
-        primaryStage.setScene(novaCena); // Muda para a próxima cena
-    }
-
-    // Torne esse método público para ir para o próximo formulário (Custos)
-    public void showCustoForm() {
-        // Aqui você pode criar e exibir o formulário de custos
-        CustosForm custoForm = new CustosForm(this); // Passando o MainApp
-
-        // Criação de uma nova cena para o próximo formulário
-        Scene novaCena = new Scene(custoForm, 400, 300);
-        primaryStage.setScene(novaCena); // Muda para a próxima cena
-    }
-
-    public void showSistemaFotoForm() {
-        // Cria o formulário do sistema fotovoltaico
+        ClienteForm clienteForm = new ClienteForm(this);
         SistemaFotoForm sistemaFotoForm = new SistemaFotoForm(this);
-
-        // Cria uma nova cena com o SistemaFotoForm
-        Scene novaCena = new Scene(sistemaFotoForm, 400, 300);
-
-        // Altera a cena no primaryStage para exibir o novo formulário
-        primaryStage.setScene(novaCena);
+        ConsumoEnergeticoForm consumoEnergeticoForm = new ConsumoEnergeticoForm(this);
+        CustosForm custosForm = new CustosForm(this);
+        mainLayout.setCenter(clienteForm); // Define o ClienteForm na área central do BorderPane
     }
 
-
+    // Método para abrir o formulário de consulta de orçamentos
     private void abrirTelaConsultarOrcamento() {
-        // Implementar a lógica para consultar orçamentos anteriores
-        System.out.println("Consultando orçamentos...");
-    }
-    
-    public void setCliente(Cliente cliente) {
-        this.cliente = cliente;
+        ConsultarOrcamentos consultarOrcamentos = new ConsultarOrcamentos(this);
+        mainLayout.setCenter(consultarOrcamentos); // Define a tela de consulta de orçamentos na área central
     }
 
-    // Método para armazenar o consumo energético
+    // Exibir o próximo formulário (Consumo) na mesma área central
+    public void showNextForm() {
+        ConsumoEnergeticoForm consumoForm = new ConsumoEnergeticoForm(this);
+        mainLayout.setCenter(consumoForm); // Define o ConsumoEnergeticoForm na área central
+    }
+
+    // Exibir o formulário de custos na mesma área central
+    public void showCustoForm() {
+        CustosForm custoForm = new CustosForm(this);
+        mainLayout.setCenter(custoForm); // Define o CustosForm na área central
+    }
+
+    // Métodos para armazenar os valores de potência e irradiância
+    public void setPotenciaSistema(float potenciaSistema) {
+        this.potenciaSistema = potenciaSistema;
+    }
+
+    public float getPotenciaSistema() {
+        return potenciaSistema;
+    }
+
+    public void setIrradiacaoSolar(double irradiacaoSolar) {
+        this.irradiacaoSolar = irradiacaoSolar;
+    }
+
+    public float getIrradiacaoSolar() {
+        return (float) irradiacaoSolar;
+    }
+
     public void setConsumoEnergetico(ConsumoEnergetico consumoEnergetico) {
         this.consumoEnergetico = consumoEnergetico;
     }
 
-    // Método para armazenar os custos
-    public void setCustos(Custos custos) {
-        this.custos = custos;
+    public ConsumoEnergetico getConsumoEnergetico() {
+        return consumoEnergetico;
     }
 
-    // Método para armazenar o sistema fotovoltaico
+    // Método para exibir o formulário do sistema fotovoltaico
+    public void showSistemaFotoForm() {
+        SistemaFotoForm sistemaFotoForm = new SistemaFotoForm(this);
+        mainLayout.setCenter(sistemaFotoForm); // Define o SistemaFotoForm na área central
+    }
+
+    public void setCliente(Cliente cliente) {
+        this.cliente = cliente;
+    }
+
+    public Cliente getCliente() {
+        return cliente;
+    }
+
     public void setSistemaFoto(SistemaFotovoltaico sistemaFoto) {
         this.sistemaFotovoltaico = sistemaFoto;
     }
 
+    public SistemaFotovoltaico getSistemaFoto() {
+        return sistemaFotovoltaico;
+    }
+
     private void gerarPDF() {
-        // Implementar a lógica para gerar o PDF
         System.out.println("Gerando PDF...");
     }
 
     private void fazerBackup() {
-        // Implementar a lógica de backup
         System.out.println("Fazendo backup...");
     }
 
     private void carregarBackup() {
-        // Implementar a lógica para carregar o backup
         System.out.println("Carregando backup...");
     }
 
+    private float latitude;
+    private float longitude;
+
+    public void setLatitude(float latitude) {
+        this.latitude = latitude;
+    }
+
+    public void setLongitude(float longitude) {
+        this.longitude = longitude;
+    }
+
+    public float getLatitude() {
+        return latitude;
+    }
+
+    public float getLongitude() {
+        return longitude;
+    }
+
     public static void main(String[] args) {
-        launch(args); // Inicia a aplicação JavaFX
+        launch(args);
     }
 }

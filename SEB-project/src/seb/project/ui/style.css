@@ -1,0 +1,67 @@
+/* Alinha os campos de forma vertical e espaça entre eles */
+.vbox {
+    -fx-spacing: 15px;
+}
+
+/* Estilo para HBoxes */
+.hbox {
+    -fx-spacing: 10px;
+}
+/* Estilo para a caixa de informações do cliente */
+/* Caixa principal para "Informações do Cliente" */
+.cliente-info-box {
+    -fx-padding: 15px;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-background-color: #f9f9f9;
+}
+
+/* Estilo para o título */
+.titulo {
+    -fx-font-size: 16px;
+    -fx-font-weight: bold;
+    -fx-text-fill: #333333;
+    -fx-padding: 0 0 10px 0;
+}
+
+
+/* Estilo dos campos de texto */
+.text-field {
+    -fx-min-width: 200px;
+    -fx-pref-width: 200px;
+    -fx-max-width: 200px;
+    -fx-background-color: #f0f0f0;
+    -fx-border-color: #cccccc;
+    -fx-border-radius: 5px;
+    -fx-padding: 10px;
+}
+
+/* Estiliza os botões para um visual mais leve */
+/* Estilo dos botões sem borda */
+.button {
+    -fx-background-color: transparent; /* Fundo transparente */
+    -fx-text-fill: #333333;            /* Cor do texto */
+    -fx-font-size: 14px;               /* Tamanho da fonte */
+    -fx-padding: 8px 12px;             /* Espaçamento interno */
+    -fx-background-radius: 5px;        /* Cantos arredondados */
+}
+
+/* Estilo ao passar o mouse */
+.button:hover {
+    -fx-background-color: #e0e0e0;     /* Cor de fundo clara ao passar o mouse */
+    -fx-background-radius: 5px;
+}
+
+
+/* Estiliza o separador vertical */
+.separator {
+    -fx-background-color: #CCCCCC;
+    -fx-pref-width: 2px;           /* Largura do separador */
+    -fx-opacity: 0.5;              /* Tornar a linha mais sutil */
+}
+
+/* Layout do VBox para os botões */
+.menuBox {
+    -fx-padding: 20px;
+    -fx-alignment: top-left;
+}

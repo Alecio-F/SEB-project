@@ -31,34 +31,34 @@ public class ClienteService {
 
     // Método para salvar todos os dados de uma vez
     public void salvarDadosCompletos(Cliente cliente, ConsumoEnergetico consumo, SistemaFotovoltaico sistema, Custos custo) {
-        try (Connection connection = DatabaseConnection.getConnection()) {
-            connection.setAutoCommit(false); // Inicia a transação
+    try (Connection connection = DatabaseConnection.getConnection()) {
+        connection.setAutoCommit(false); // Inicia a transação
 
-            try {
-                // Salva os dados do cliente e obtém o ID gerado
-                clienteDAO.inserirCliente(cliente, connection);
-                int clienteId = cliente.getId(); // Pega o ID gerado
+        try {
+            // Insere o cliente e obtém o ID gerado
+            int clienteId = clienteDAO.inserirCliente(cliente);
 
-                // Define o ID do cliente nas outras tabelas para manter a relação
-                consumo.setClienteId(clienteId);
-                sistema.setClienteId(clienteId);
-                custo.setClienteId(clienteId);
+            // Define o ID do cliente nas outras tabelas para manter a relação
+            consumo.setCliente_id(clienteId);
+            sistema.setCliente_id(clienteId);
+            custo.setCliente_id(clienteId);
 
-                // Salva os dados nas outras tabelas
-                consumoDAO.inserirConsumoEnergetico(consumo, connection);
-                sistemaDAO.inserirSistema(sistema, connection);
-                custoDAO.inserirCusto(custo, connection);
+            // Salva os dados nas outras tabelas
+            consumoDAO.inserirConsumoEnergetico(consumo);
+            sistemaDAO.inserirSistema(sistema);
+            custoDAO.inserirCusto(custo);
 
-                connection.commit(); // Confirma a transação
-                System.out.println("Dados completos salvos com sucesso!");
-
-            } catch (SQLException e) {
-                connection.rollback(); // Reverte a transação em caso de erro
-                System.err.println("Erro ao salvar os dados: " + e.getMessage());
-            }
+            connection.commit(); // Confirma a transação
+            System.out.println("Dados completos salvos com sucesso!");
 
         } catch (SQLException e) {
-            e.printStackTrace();
+            connection.rollback(); // Reverte a transação em caso de erro
+            System.err.println("Erro ao salvar os dados: " + e.getMessage());
         }
+
+    } catch (SQLException e) {
+        e.printStackTrace();
     }
+    }
+
 }
