@@ -18,7 +18,7 @@ public class DatabaseConnection {
     private static final String USER = "root";
     
     // Senha correspondente ao usuário do banco de dados
-    private static final String PASSWORD = "Alecio.2001";
+    private static final String PASSWORD = "senha";
 
     /**
      * Método estático que retorna uma conexão com o banco de dados.
